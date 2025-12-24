@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dragon Vs Tiger Pro</title>
+    <style>
+        /* --- CORE SETTINGS --- */
+        body {
+            margin: 0; padding: 0;
+            background-color: #102010; /* Dark Green fallback */
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh; width: 100vw;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        .game-wrapper {
+            position: relative;
+            width: 100%; height: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background-image: url('assets/dt_table_bg.jpg'); 
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+
+        /* --- HEADER (Dealer Area) --- */
+        .header-area {
+            height: 25%;
+            position: relative;
+            display: flex; justify-content: center; align-items: flex-end;
+            z-index: 5;
+        }
+        .dealer-img {
+            height: 90%; 
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+        
+        /* VS Logo in Center */
+        .vs-logo {
+            position: absolute; top: 60%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px; font-weight: 900; color: gold;
+            text-shadow: 0 0 20px orange;
+            z-index: 10;
+        }
+
+        /* --- PLAYER LISTS (Left & Right) --- */
+        .players-sidebar {
+            position: absolute;
+            top: 20%; 
+            width: 70px;
+            display: flex; flex-direction: column; gap: 10px;
+            z-index: 20;
+        }
+        .players-left { left: 10px; align-items: flex-start; }
+        .players-right { right: 10px; align-items: flex-end; }
+
+        .player-item {
+            background: rgba(0,0,0,0.6);
+            padding: 5px; border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        
+        .avatar {
+            width: 35px; height: 35px;
+            background: #333; border-radius: 50%;
+            margin: 0 auto 2px auto;
+            border: 2px solid gold;
+            overflow: hidden;
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .p-name { font-size: 8px; color: #aaa; }
+        .p-balance { font-size: 9px; color: gold; font-weight: bold; }
+
+        /* --- BETTING ZONES (Dragon / Tie / Tiger) --- */
+        .table-area {
+            flex-grow: 1;
+            position: relative;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px;
+            margin-top: -20px;
+        }
+
+        .bet-zone {
+            width: 30%; height: 180px;
+            border-radius: 100px 100px 10px 10px; /* Arch shape */
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative;
+            transition: transform 0.1s;
+        }
+        .bet-zone:active { transform: scale(0.95); }
+
+        /* Dragon Zone */
+        .zone-dragon { background: rgba(255, 0, 0, 0.1); border-color: #ff4444; }
+        .zone-dragon .zone-label { color: #ff4444; font-size: 24px; font-weight: 900; }
+        
+        /* Tiger Zone */
+        .zone-tiger { background: rgba(0, 100, 255, 0.1); border-color: #4488ff; }
+        .zone-tiger .zone-label { color: #4488ff; font-size: 24px; font-weight: 900; }
+
+        /* Tie Zone (Center) */
+        .zone-tie {
+            position: absolute; left: 50%; bottom: 20px;
+            transform: translateX(-50%);
+            width: 25%; height: 60px;
+            background: rgba(0, 255, 0, 0.1); border-color: #00ff00;
+            border-radius: 10px;
+            z-index: 5;
+        }
+        .zone-tie .zone-label { color: #00ff00; font-size: 14px; font-weight: bold; }
+
+        /* Cards Holders */
+        .card-placeholder {
+            width: 60px; height: 84px;
+            background: rgba(0,0,0,0.5);
+            border: 1px dashed rgba(255,255,255,0.3);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .card-img { width: 100%; height: 100%; object-fit: contain; display: none; }
+
+        /* --- BOTTOM CONTROLS (Chips) --- */
+        .controls-area {
+            height: 100px;
+            background: linear-gradient(to top, #000, transparent);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding-bottom: 10px;
+        }
+        
+        .chips-scroll {
+            display: flex; justify-content: center; gap: 10px;
+            overflow-x: auto; padding: 10px;
+        }
+        
+        .chip-btn {
+            width: 50px; height: 50px;
+            background: url('assets/icon_cash.png') no-repeat center/contain; /* Placeholder */
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; color: #000; font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 5px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .chip-btn.selected { transform: translateY(-10px); box-shadow: 0 10px 10px rgba(0,0,0,0.8); border: 2px solid white; }
+        
+        /* CHIP ANIMATION (CSS Class for JS) */
+        .flying-chip {
+            position: absolute;
+            width: 20px; height: 20px;
+            background: url('assets/icon_cash.png') no-repeat center/contain;
+            z-index: 100;
+            pointer-events: none;
+            transition: all 0.5s ease-out;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="game-wrapper" id="gameArea">
+        
+        <div class="header-area">
+            <img src="assets/dealer_girl.png" class="dealer-img" alt="Dealer">
+        </div>
+
+        <div class="vs-logo">VS</div>
+
+        <div class="players-sidebar players-left" id="leftPlayers">
+            </div>
+
+        <div class="players-sidebar players-right" id="rightPlayers">
+            </div>
+
+        <div class="table-area">
+            
+            <div class="bet-zone zone-dragon" onclick="placeBet('dragon')">
+                <div class="card-placeholder" id="cardDragon"></div>
+                <div class="zone-label">DRAGON</div>
+                <div id="totalDragon" style="color:white; font-size:12px;">0</div>
+            </div>
+
+            <div class="bet-zone zone-tie" onclick="placeBet('tie')">
+                <div class="zone-label">TIE (8x)</div>
+            </div>
+
+            <div class="bet-zone zone-tiger" onclick="placeBet('tiger')">
+                <div class="card-placeholder" id="cardTiger"></div>
+                <div class="zone-label">TIGER</div>
+                <div id="totalTiger" style="color:white; font-size:12px;">0</div>
+            </div>
+
+        </div>
+
+        <div class="controls-area">
+            <div style="text-align:center; color:gold; margin-bottom:5px;">Balance: <span id="myBalance">5000</span></div>
+            <div class="chips-scroll">
+                <div class="chip-btn" onclick="selectChip(10)">10</div>
+                <div class="chip-btn selected" onclick="selectChip(50)">50</div>
+                <div class="chip-btn" onclick="selectChip(100)">100</div>
+                <div class="chip-btn" onclick="selectChip(500)">500</div>
+                <div class="chip-btn" onclick="selectChip(1000)">1k</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- JAVASCRIPT: BOTS LOGIC ---
+        
+        // Random Names Generator
+        const botNames = [
+            "Guest8392", "Ali_King", "Tiger777", "LuckyBoy", 
+            "Guest2201", "Faisal_X", "Winner99", "Guest112",
+            "Mani_PK", "Zoya_Doll", "Khan_007", "Guest554"
+        ];
+
+        // 1. Players Populate Karna
+        function initBots() {
+            const leftDiv = document.getElementById('leftPlayers');
+            const rightDiv = document.getElementById('rightPlayers');
+            
+            // Left Side 4 Players
+            for(let i=0; i<4; i++) {
+                leftDiv.innerHTML += createPlayerHTML(getRandomName());
+            }
+            // Right Side 4 Players
+            for(let i=0; i<4; i++) {
+                rightDiv.innerHTML += createPlayerHTML(getRandomName());
+            }
+        }
+
+        function createPlayerHTML(name) {
+            // Random Avatars (Placeholder colors)
+            const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+            return `
+                <div class="player-item" id="player-${name}">
+                    <div class="avatar" style="background:${randomColor}"></div>
+                    <div class="p-name">${name}</div>
+                    <div class="p-balance">${Math.floor(Math.random() * 50000)}</div>
+                </div>
+            `;
+        }
+
+        function getRandomName() {
+            return botNames[Math.floor(Math.random() * botNames.length)];
+        }
+
+        // 2. Chip Throwing Simulation (Fake Bets)
+        function startFakeBets() {
+            setInterval(() => {
+                // 30% chance har second kisi bot ka bet lagne ka
+                if(Math.random() > 0.3) {
+                    throwRandomChip();
+                }
+            }, 800); // Har 800ms check karega
+        }
+
+        function throwRandomChip() {
+            // Randomly pick Dragon or Tiger side to bet
+            const target = Math.random() > 0.5 ? 'dragon' : 'tiger';
+            const targetZone = document.querySelector(`.zone-${target}`);
+            
+            // Randomly pick left or right sidebar
+            const side = Math.random() > 0.5 ? 'left' : 'right';
+            const players = document.querySelectorAll(`.players-${side} .player-item`);
+            const randomPlayer = players[Math.floor(Math.random() * players.length)];
+            
+            animateChip(randomPlayer, targetZone);
+        }
+
+        function animateChip(startElem, endElem) {
+            const gameArea = document.getElementById('gameArea');
+            const chip = document.createElement('div');
+            chip.classList.add('flying-chip');
+            
+            // Start Position (Player)
+            const startRect = startElem.getBoundingClientRect();
+            chip.style.left = (startRect.left + 15) + 'px';
+            chip.style.top = (startRect.top + 15) + 'px';
+            
+            gameArea.appendChild(chip);
+
+            // End Position (Table Zone)
+            const endRect = endElem.getBoundingClientRect();
+            // Thoda random position taake chips ka dher lage
+            const randX = Math.random() * 50 - 25; 
+            const randY = Math.random() * 50 - 25;
+
+            // Animation (Wait thoda sa taake DOM render ho)
+            setTimeout(() => {
+                chip.style.left = (endRect.left + endRect.width/2 + randX) + 'px';
+                chip.style.top = (endRect.top + endRect.height/2 + randY) + 'px';
+                chip.style.transform = "scale(0.8) rotate(360deg)"; // Ghoomta hua jayega
+            }, 10);
+
+            // Total Update (Fake logic)
+            setTimeout(() => {
+                // Chip wahan reh jaye ya gayab ho jaye? Usually rehti hai
+                // Filhal total update karte hain
+                /* Ye logic backend se connect hogi baad mein */
+            }, 500);
+        }
+
+        // Selected Chip
+        let currentChip = 50;
+        function selectChip(val) {
+            currentChip = val;
+            document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function placeBet(side) {
+            // User ka apna bet animation
+            // Logic baad mein...
+            alert("Bet Placed on " + side + " (Animation Coming Soon)");
+        }
+
+        // Initialize
+        initBots();
+        startFakeBets(); // Bots shuru!
+
+    </script>
+</body>
+</html>
