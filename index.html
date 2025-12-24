@@ -8,11 +8,12 @@
         /* --- CORE SETTINGS --- */
         body {
             margin: 0; padding: 0;
-            background-color: #102010; /* Dark Green fallback */
+            background-color: #0a1a0a; 
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             height: 100vh; width: 100vw;
             overflow: hidden;
+            user-select: none;
             display: flex; flex-direction: column;
         }
 
@@ -36,134 +37,171 @@
             z-index: 5;
         }
         .dealer-img {
-            height: 90%; 
+            height: 95%; 
             filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
         }
         
-        /* VS Logo in Center */
         .vs-logo {
             position: absolute; top: 60%; left: 50%;
             transform: translate(-50%, -50%);
             font-size: 40px; font-weight: 900; color: gold;
-            text-shadow: 0 0 20px orange;
+            text-shadow: 0 0 20px orange, 0 0 5px red;
             z-index: 10;
+            animation: pulse-vs 2s infinite;
+        }
+        @keyframes pulse-vs {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
         }
 
-        /* --- PLAYER LISTS (Left & Right) --- */
+        /* --- PLAYERS SIDEBARS --- */
         .players-sidebar {
-            position: absolute;
-            top: 20%; 
-            width: 70px;
-            display: flex; flex-direction: column; gap: 10px;
-            z-index: 20;
+            position: absolute; top: 20%; width: 60px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 20;
         }
-        .players-left { left: 10px; align-items: flex-start; }
-        .players-right { right: 10px; align-items: flex-end; }
+        .players-left { left: 5px; align-items: flex-start; }
+        .players-right { right: 5px; align-items: flex-end; }
 
         .player-item {
-            background: rgba(0,0,0,0.6);
-            padding: 5px; border-radius: 8px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            width: 100%;
-            transition: transform 0.2s;
+            background: rgba(0,0,0,0.7);
+            padding: 2px; border-radius: 8px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.1);
+            width: 100%; transition: transform 0.2s;
         }
-        
         .avatar {
-            width: 35px; height: 35px;
+            width: 30px; height: 30px;
             background: #333; border-radius: 50%;
-            margin: 0 auto 2px auto;
-            border: 2px solid gold;
-            overflow: hidden;
+            margin: 0 auto; border: 2px solid gold; overflow: hidden;
         }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .p-name { font-size: 8px; color: #aaa; }
-        .p-balance { font-size: 9px; color: gold; font-weight: bold; }
+        .p-name { font-size: 8px; color: #ccc; margin-top: 2px; }
+        .p-balance { font-size: 8px; color: gold; font-weight: bold; }
 
-        /* --- BETTING ZONES (Dragon / Tie / Tiger) --- */
+        /* --- TABLE & BET ZONES --- */
         .table-area {
-            flex-grow: 1;
-            position: relative;
+            flex-grow: 1; position: relative;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px;
-            margin-top: -20px;
+            padding: 0 15px; margin-top: -10px;
         }
 
         .bet-zone {
-            width: 30%; height: 180px;
-            border-radius: 100px 100px 10px 10px; /* Arch shape */
-            border: 2px solid rgba(255,255,255,0.2);
+            width: 32%; height: 160px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.1);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            position: relative;
-            transition: transform 0.1s;
+            position: relative; transition: transform 0.1s;
         }
         .bet-zone:active { transform: scale(0.95); }
 
-        /* Dragon Zone */
-        .zone-dragon { background: rgba(255, 0, 0, 0.1); border-color: #ff4444; }
-        .zone-dragon .zone-label { color: #ff4444; font-size: 24px; font-weight: 900; }
+        /* Specific Zones */
+        .zone-dragon { background: rgba(255, 0, 0, 0.05); border-color: #ff3333; }
+        .zone-tiger { background: rgba(0, 100, 255, 0.05); border-color: #3388ff; }
         
-        /* Tiger Zone */
-        .zone-tiger { background: rgba(0, 100, 255, 0.1); border-color: #4488ff; }
-        .zone-tiger .zone-label { color: #4488ff; font-size: 24px; font-weight: 900; }
+        .zone-label {
+            font-size: 20px; font-weight: 900; margin-top: 50px; /* Space for card */
+            text-transform: uppercase;
+        }
+        .zone-dragon .zone-label { color: #ff3333; }
+        .zone-tiger .zone-label { color: #3388ff; }
 
-        /* Tie Zone (Center) */
         .zone-tie {
-            position: absolute; left: 50%; bottom: 20px;
+            position: absolute; left: 50%; bottom: 10px;
             transform: translateX(-50%);
-            width: 25%; height: 60px;
-            background: rgba(0, 255, 0, 0.1); border-color: #00ff00;
-            border-radius: 10px;
+            width: 30%; height: 50px;
+            background: rgba(0, 255, 0, 0.1); border: 2px solid #00ff00;
+            border-radius: 50px; display: flex; justify-content: center; align-items: center;
             z-index: 5;
         }
-        .zone-tie .zone-label { color: #00ff00; font-size: 14px; font-weight: bold; }
+        .zone-tie span { color: #00ff00; font-weight: bold; font-size: 14px; }
 
-        /* Cards Holders */
-        .card-placeholder {
-            width: 60px; height: 84px;
-            background: rgba(0,0,0,0.5);
-            border: 1px dashed rgba(255,255,255,0.3);
-            border-radius: 5px;
-            margin-bottom: 10px;
-            display: flex; justify-content: center; align-items: center;
+        /* WIN EFFECT */
+        .win-glow {
+            box-shadow: 0 0 30px gold, inset 0 0 30px gold;
+            background: rgba(255, 215, 0, 0.2) !important;
+            animation: win-pulse 0.5s infinite alternate;
         }
-        .card-img { width: 100%; height: 100%; object-fit: contain; display: none; }
+        @keyframes win-pulse { from { opacity: 0.8; } to { opacity: 1; } }
+
+        /* --- CARDS 3D --- */
+        .card-container {
+            width: 50px; height: 70px;
+            position: absolute; top: 15%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            perspective: 1000px; z-index: 100; opacity: 0;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            text-align: center; transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .card-back {
+            background-image: url('assets/card_back.png'); background-size: cover;
+            border: 1px solid gold;
+        }
+        .card-front {
+            background-color: white; transform: rotateY(180deg);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 22px; font-weight: bold; color: black;
+            background-size: cover;
+        }
 
         /* --- BOTTOM CONTROLS (Chips) --- */
         .controls-area {
-            height: 100px;
-            background: linear-gradient(to top, #000, transparent);
+            height: 90px;
+            background: linear-gradient(to top, #000 80%, transparent);
             display: flex; flex-direction: column; justify-content: flex-end;
-            padding-bottom: 10px;
+            padding-bottom: 10px; z-index: 50;
         }
-        
         .chips-scroll {
-            display: flex; justify-content: center; gap: 10px;
-            overflow-x: auto; padding: 10px;
+            display: flex; justify-content: center; gap: 15px;
+            overflow-x: auto; padding: 5px 10px;
         }
-        
         .chip-btn {
             width: 50px; height: 50px;
-            background: url('assets/icon_cash.png') no-repeat center/contain; /* Placeholder */
-            border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: bold; color: #000; font-size: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 5px rgba(0,0,0,0.5);
-            transition: transform 0.2s;
+            cursor: pointer; transition: transform 0.2s;
             position: relative;
         }
-        .chip-btn.selected { transform: translateY(-10px); box-shadow: 0 10px 10px rgba(0,0,0,0.8); border: 2px solid white; }
+        .chip-btn img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.8)); }
         
-        /* CHIP ANIMATION (CSS Class for JS) */
+        .chip-btn.selected { transform: translateY(-10px) scale(1.1); }
+        .chip-btn.selected img { filter: drop-shadow(0 0 10px gold); }
+
+        /* --- FLYING CHIP ANIMATION --- */
         .flying-chip {
-            position: absolute;
-            width: 20px; height: 20px;
-            background: url('assets/icon_cash.png') no-repeat center/contain;
-            z-index: 100;
-            pointer-events: none;
-            transition: all 0.5s ease-out;
+            position: absolute; width: 25px; height: 25px;
+            background-size: contain; background-repeat: no-repeat;
+            z-index: 90; pointer-events: none;
+            transition: all 0.6s ease-out;
+        }
+
+        /* --- STATUS MESSAGES --- */
+        .game-status {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px; font-weight: 900; color: white;
+            text-shadow: 0 0 10px black;
+            padding: 10px 30px; border-radius: 50px;
+            background: rgba(0,0,0,0.8); border: 2px solid gold;
+            display: none; z-index: 200;
+            animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes pop-in { from { transform: translate(-50%, -50%) scale(0); } to { transform: translate(-50%, -50%) scale(1); } }
+
+        /* Countdown Timer */
+        .timer-badge {
+            position: absolute; top: 10px; right: 10px;
+            width: 40px; height: 40px;
+            background: rgba(0,0,0,0.6); border: 2px solid #00ffcc; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; color: #00ffcc; font-size: 18px;
+            z-index: 50;
         }
 
     </style>
@@ -172,165 +210,289 @@
 
     <div class="game-wrapper" id="gameArea">
         
+        <div class="timer-badge" id="timer">10</div>
+
+        <div id="statusMsg" class="game-status">STOP BETTING</div>
+
         <div class="header-area">
             <img src="assets/dealer_girl.png" class="dealer-img" alt="Dealer">
         </div>
-
         <div class="vs-logo">VS</div>
 
-        <div class="players-sidebar players-left" id="leftPlayers">
-            </div>
-
-        <div class="players-sidebar players-right" id="rightPlayers">
-            </div>
+        <div class="players-sidebar players-left" id="leftPlayers"></div>
+        <div class="players-sidebar players-right" id="rightPlayers"></div>
 
         <div class="table-area">
-            
-            <div class="bet-zone zone-dragon" onclick="placeBet('dragon')">
-                <div class="card-placeholder" id="cardDragon"></div>
+            <div class="bet-zone zone-dragon" id="zoneDragon" onclick="userBet('dragon')">
                 <div class="zone-label">DRAGON</div>
-                <div id="totalDragon" style="color:white; font-size:12px;">0</div>
+            </div>
+            
+            <div class="bet-zone zone-tie" onclick="userBet('tie')">
+                <span>TIE (8x)</span>
             </div>
 
-            <div class="bet-zone zone-tie" onclick="placeBet('tie')">
-                <div class="zone-label">TIE (8x)</div>
-            </div>
-
-            <div class="bet-zone zone-tiger" onclick="placeBet('tiger')">
-                <div class="card-placeholder" id="cardTiger"></div>
+            <div class="bet-zone zone-tiger" id="zoneTiger" onclick="userBet('tiger')">
                 <div class="zone-label">TIGER</div>
-                <div id="totalTiger" style="color:white; font-size:12px;">0</div>
             </div>
-
         </div>
 
         <div class="controls-area">
-            <div style="text-align:center; color:gold; margin-bottom:5px;">Balance: <span id="myBalance">5000</span></div>
+            <div style="text-align:center; color:gold; margin-bottom:5px; font-size:12px;">Balance: <span id="myBalance">5000</span></div>
             <div class="chips-scroll">
-                <div class="chip-btn" onclick="selectChip(10)">10</div>
-                <div class="chip-btn selected" onclick="selectChip(50)">50</div>
-                <div class="chip-btn" onclick="selectChip(100)">100</div>
-                <div class="chip-btn" onclick="selectChip(500)">500</div>
-                <div class="chip-btn" onclick="selectChip(1000)">1k</div>
+                <div class="chip-btn" onclick="selectChip(10, 'assets/chip_10.png', this)">
+                    <img src="assets/chip_10.png" alt="10">
+                </div>
+                <div class="chip-btn selected" onclick="selectChip(50, 'assets/chip_50.png', this)">
+                    <img src="assets/chip_50.png" alt="50">
+                </div>
+                <div class="chip-btn" onclick="selectChip(100, 'assets/chip_100.png', this)">
+                    <img src="assets/chip_100.png" alt="100">
+                </div>
+                <div class="chip-btn" onclick="selectChip(500, 'assets/chip_500.png', this)">
+                    <img src="assets/chip_500.png" alt="500">
+                </div>
+                <div class="chip-btn" onclick="selectChip(1000, 'assets/chip_1k.png', this)">
+                    <img src="assets/chip_1k.png" alt="1k">
+                </div>
             </div>
         </div>
 
     </div>
 
     <script>
-        // --- JAVASCRIPT: BOTS LOGIC ---
+        // --- GAME ASSETS & CONFIG ---
+        const botNames = ["Ali_King", "Tiger99", "Lucky7", "Khan007", "Zoya_PK", "Mani_X", "Guest1", "Guest2"];
+        const chipImages = {
+            10: 'assets/chip_10.png',
+            50: 'assets/chip_50.png',
+            100: 'assets/chip_100.png',
+            500: 'assets/chip_500.png',
+            1000: 'assets/chip_1k.png'
+        };
+        const chipValues = [10, 50, 100, 500, 1000];
+
+        // State
+        let currentChipVal = 50;
+        let currentChipImg = 'assets/chip_50.png';
+        let gameState = 'BETTING'; // BETTING, STOP, RESULT
+        let countdown = 10;
+        let timerInterval;
+
+        // --- 1. INITIALIZATION ---
+        function init() {
+            populateBots();
+            startTimer();
+            startBotBetting();
+        }
+
+        function populateBots() {
+            const lDiv = document.getElementById('leftPlayers');
+            const rDiv = document.getElementById('rightPlayers');
+            for(let i=0; i<4; i++) {
+                lDiv.innerHTML += createBotHTML(botNames[i]);
+                rDiv.innerHTML += createBotHTML(botNames[i+4]);
+            }
+        }
         
-        // Random Names Generator
-        const botNames = [
-            "Guest8392", "Ali_King", "Tiger777", "LuckyBoy", 
-            "Guest2201", "Faisal_X", "Winner99", "Guest112",
-            "Mani_PK", "Zoya_Doll", "Khan_007", "Guest554"
-        ];
+        function createBotHTML(name) {
+            const col = '#' + Math.floor(Math.random()*16777215).toString(16);
+            return `<div class="player-item" id="p-${name}">
+                <div class="avatar" style="background:${col}"></div>
+                <div class="p-name">${name}</div>
+            </div>`;
+        }
 
-        // 1. Players Populate Karna
-        function initBots() {
-            const leftDiv = document.getElementById('leftPlayers');
-            const rightDiv = document.getElementById('rightPlayers');
+        function selectChip(val, img, elem) {
+            currentChipVal = val;
+            currentChipImg = img;
+            document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+            elem.classList.add('selected');
+        }
+
+        // --- 2. GAME LOOP LOGIC ---
+        function startTimer() {
+            countdown = 10;
+            gameState = 'BETTING';
+            showStatus("START BETTING");
+            setTimeout(() => document.getElementById('statusMsg').style.display = 'none', 1000);
             
-            // Left Side 4 Players
-            for(let i=0; i<4; i++) {
-                leftDiv.innerHTML += createPlayerHTML(getRandomName());
-            }
-            // Right Side 4 Players
-            for(let i=0; i<4; i++) {
-                rightDiv.innerHTML += createPlayerHTML(getRandomName());
-            }
-        }
+            // Clear Table
+            document.querySelectorAll('.flying-chip').forEach(c => c.remove());
+            document.querySelectorAll('.card-container').forEach(c => c.remove());
+            document.querySelectorAll('.bet-zone').forEach(z => z.classList.remove('win-glow'));
 
-        function createPlayerHTML(name) {
-            // Random Avatars (Placeholder colors)
-            const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-            return `
-                <div class="player-item" id="player-${name}">
-                    <div class="avatar" style="background:${randomColor}"></div>
-                    <div class="p-name">${name}</div>
-                    <div class="p-balance">${Math.floor(Math.random() * 50000)}</div>
-                </div>
-            `;
-        }
-
-        function getRandomName() {
-            return botNames[Math.floor(Math.random() * botNames.length)];
-        }
-
-        // 2. Chip Throwing Simulation (Fake Bets)
-        function startFakeBets() {
-            setInterval(() => {
-                // 30% chance har second kisi bot ka bet lagne ka
-                if(Math.random() > 0.3) {
-                    throwRandomChip();
+            timerInterval = setInterval(() => {
+                countdown--;
+                document.getElementById('timer').innerText = countdown;
+                
+                if(countdown <= 0) {
+                    clearInterval(timerInterval);
+                    stopBetting();
                 }
-            }, 800); // Har 800ms check karega
+            }, 1000);
         }
 
-        function throwRandomChip() {
-            // Randomly pick Dragon or Tiger side to bet
-            const target = Math.random() > 0.5 ? 'dragon' : 'tiger';
-            const targetZone = document.querySelector(`.zone-${target}`);
+        function stopBetting() {
+            gameState = 'STOP';
+            showStatus("STOP BETTING");
             
-            // Randomly pick left or right sidebar
-            const side = Math.random() > 0.5 ? 'left' : 'right';
-            const players = document.querySelectorAll(`.players-${side} .player-item`);
-            const randomPlayer = players[Math.floor(Math.random() * players.length)];
-            
-            animateChip(randomPlayer, targetZone);
+            setTimeout(() => {
+                document.getElementById('statusMsg').style.display = 'none';
+                dealCards();
+            }, 1500);
         }
 
-        function animateChip(startElem, endElem) {
-            const gameArea = document.getElementById('gameArea');
+        function showStatus(text) {
+            const msg = document.getElementById('statusMsg');
+            msg.innerText = text;
+            msg.style.display = 'block';
+            if(text.includes("STOP")) msg.style.color = "red";
+            else msg.style.color = "gold";
+        }
+
+        // --- 3. CARD ANIMATION ---
+        function dealCards() {
+            createCard('dragon-card');
+            createCard('tiger-card');
+
+            // Move Dragon
+            setTimeout(() => moveCard('dragon-card', 'zoneDragon'), 500);
+            // Move Tiger
+            setTimeout(() => moveCard('tiger-card', 'zoneTiger'), 1000);
+
+            // Flip & Result
+            setTimeout(() => {
+                // Random Logic for Demo
+                const dVal = Math.floor(Math.random() * 13) + 1;
+                const tVal = Math.floor(Math.random() * 13) + 1;
+                
+                flipCard('dragon-card', getCardFace(dVal));
+                flipCard('tiger-card', getCardFace(tVal));
+
+                setTimeout(() => declareWinner(dVal, tVal), 1000);
+
+            }, 2500);
+        }
+
+        function createCard(id) {
+            const html = `
+                <div class="card-container" id="${id}">
+                    <div class="card-inner">
+                        <div class="card-back"></div>
+                        <div class="card-front"></div>
+                    </div>
+                </div>`;
+            document.getElementById('gameArea').insertAdjacentHTML('beforeend', html);
+        }
+
+        function moveCard(cardId, zoneId) {
+            const card = document.getElementById(cardId);
+            const zone = document.getElementById(zoneId);
+            const rect = zone.getBoundingClientRect();
+            
+            // Calculate center of zone
+            // We use fixed values because card size is fixed
+            const top = rect.top + (rect.height / 2) - 35; 
+            const left = rect.left + (rect.width / 2) - 25;
+
+            card.style.top = top + 'px';
+            card.style.left = left + 'px';
+            card.style.opacity = '1';
+            card.style.transform = "scale(1.2)";
+        }
+
+        function flipCard(cardId, text) {
+            const card = document.getElementById(cardId);
+            const front = card.querySelector('.card-front');
+            front.innerText = text;
+            if(text.includes('♥') || text.includes('♦')) front.style.color = "red";
+            else front.style.color = "black";
+            
+            card.querySelector('.card-inner').style.transform = "rotateY(180deg)";
+        }
+
+        function getCardFace(val) {
+            const suits = ['♠', '♥', '♣', '♦'];
+            const suit = suits[Math.floor(Math.random() * 4)];
+            const faces = {1:'A', 11:'J', 12:'Q', 13:'K'};
+            return (faces[val] || val) + " " + suit;
+        }
+
+        function declareWinner(d, t) {
+            let winner = '';
+            if(d > t) { winner = 'DRAGON WINS'; document.getElementById('zoneDragon').classList.add('win-glow'); }
+            else if(t > d) { winner = 'TIGER WINS'; document.getElementById('zoneTiger').classList.add('win-glow'); }
+            else { winner = 'TIE'; }
+
+            showStatus(winner);
+
+            // Restart Loop
+            setTimeout(() => {
+                startTimer();
+            }, 4000);
+        }
+
+        // --- 4. CHIP ANIMATIONS (Bets) ---
+        function userBet(side) {
+            if(gameState !== 'BETTING') return;
+            
+            // User side chip (Bottom center se niklega)
+            const zone = document.querySelector(`.zone-${side}`);
+            const startRect = document.querySelector('.controls-area').getBoundingClientRect();
+            
+            animateChip(
+                startRect.left + startRect.width/2,
+                startRect.top,
+                zone,
+                currentChipImg
+            );
+        }
+
+        function startBotBetting() {
+            setInterval(() => {
+                if(gameState !== 'BETTING') return;
+                
+                // Randomly pick a bot
+                const allBots = document.querySelectorAll('.player-item');
+                const randomBot = allBots[Math.floor(Math.random() * allBots.length)];
+                
+                // Random Side
+                const side = Math.random() > 0.5 ? 'dragon' : 'tiger';
+                const zone = document.querySelector(`.zone-${side}`);
+                
+                // Random Value for Bot
+                const rVal = chipValues[Math.floor(Math.random() * chipValues.length)];
+                const rImg = chipImages[rVal];
+
+                const rect = randomBot.getBoundingClientRect();
+                animateChip(rect.left + 15, rect.top + 15, zone, rImg);
+
+            }, 400); // Fast betting
+        }
+
+        function animateChip(startX, startY, targetZone, imgUrl) {
             const chip = document.createElement('div');
             chip.classList.add('flying-chip');
+            chip.style.backgroundImage = `url('${imgUrl}')`;
+            chip.style.left = startX + 'px';
+            chip.style.top = startY + 'px';
             
-            // Start Position (Player)
-            const startRect = startElem.getBoundingClientRect();
-            chip.style.left = (startRect.left + 15) + 'px';
-            chip.style.top = (startRect.top + 15) + 'px';
-            
-            gameArea.appendChild(chip);
+            document.getElementById('gameArea').appendChild(chip);
 
-            // End Position (Table Zone)
-            const endRect = endElem.getBoundingClientRect();
-            // Thoda random position taake chips ka dher lage
-            const randX = Math.random() * 50 - 25; 
-            const randY = Math.random() * 50 - 25;
+            const zRect = targetZone.getBoundingClientRect();
+            // Random scatter in zone
+            const randX = Math.random() * 60 - 30;
+            const randY = Math.random() * 60 - 30;
 
-            // Animation (Wait thoda sa taake DOM render ho)
             setTimeout(() => {
-                chip.style.left = (endRect.left + endRect.width/2 + randX) + 'px';
-                chip.style.top = (endRect.top + endRect.height/2 + randY) + 'px';
-                chip.style.transform = "scale(0.8) rotate(360deg)"; // Ghoomta hua jayega
+                chip.style.left = (zRect.left + zRect.width/2 + randX - 12) + 'px';
+                chip.style.top = (zRect.top + zRect.height/2 + randY - 12) + 'px';
+                chip.style.transform = `rotate(${Math.random()*360}deg) scale(0.8)`;
             }, 10);
-
-            // Total Update (Fake logic)
-            setTimeout(() => {
-                // Chip wahan reh jaye ya gayab ho jaye? Usually rehti hai
-                // Filhal total update karte hain
-                /* Ye logic backend se connect hogi baad mein */
-            }, 500);
         }
 
-        // Selected Chip
-        let currentChip = 50;
-        function selectChip(val) {
-            currentChip = val;
-            document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
-            event.target.classList.add('selected');
-        }
-
-        function placeBet(side) {
-            // User ka apna bet animation
-            // Logic baad mein...
-            alert("Bet Placed on " + side + " (Animation Coming Soon)");
-        }
-
-        // Initialize
-        initBots();
-        startFakeBets(); // Bots shuru!
+        // Start
+        init();
 
     </script>
 </body>
