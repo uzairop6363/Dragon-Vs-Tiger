@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dragon Vs Tiger Pro</title>
     <style>
-        /* --- CORE SETTINGS --- */
+        /* --- 1. LOADING SCREEN (NEW ADDITION) --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            background-image: url('assets/poster_dvt.jpg'); /* YOUR POSTER */
+            background-size: cover; background-position: center;
+            z-index: 9999;
+            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+            padding-bottom: 80px;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .loading-text {
+            color: #fff; font-family: 'Segoe UI', sans-serif; font-size: 18px; font-weight: bold;
+            margin-bottom: 10px; text-shadow: 0 2px 5px #000; letter-spacing: 2px;
+            text-transform: uppercase; animation: blink 1.5s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        .progress-container {
+            width: 80%; max-width: 320px; height: 35px;
+            background-image: url('assets/frame_dvt.png'); /* YOUR FRAME */
+            background-size: 100% 100%; background-repeat: no-repeat;
+            display: flex; align-items: center; padding: 0 6px;
+            box-sizing: border-box; filter: drop-shadow(0 5px 10px #000);
+        }
+
+        .progress-fill {
+            height: 60%; width: 0%;
+            /* Dragon Red to Tiger Blue Gradient */
+            background: linear-gradient(90deg, #ff3333, #aa0000, #0044ff, #3388ff);
+            border-radius: 4px; box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transition: width 0.1s linear;
+        }
+
+        /* --- 2. HIDE GAME INITIALLY --- */
+        .game-wrapper {
+            opacity: 0; /* Hidden at start */
+            transition: opacity 1.5s ease-in; /* Smooth reveal */
+        }
+        .game-wrapper.active { opacity: 1; }
+
+
+        /* --- CORE SETTINGS (YOUR ORIGINAL CSS) --- */
         body {
             margin: 0; padding: 0;
             background-color: #050505; 
@@ -307,6 +351,13 @@
 </head>
 <body>
 
+    <div id="loader">
+        <div class="loading-text" id="loadStatus">CONNECTING ARENA...</div>
+        <div class="progress-container">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+    </div>
+
     <div class="game-wrapper" id="gameArea">
         
         <div class="history-bar">
@@ -370,7 +421,45 @@
     </div>
 
     <script>
-        // --- GAME LOGIC ---
+        // --- LOADING SCRIPT (4 SECONDS) ---
+        window.onload = function() {
+            const bar = document.getElementById('progressBar');
+            const loader = document.getElementById('loader');
+            const status = document.getElementById('loadStatus');
+            const game = document.getElementById('gameArea');
+            let width = 0;
+
+            const simulateLoading = () => {
+                // 4 seconds = 4000ms. Update every 40ms => 100 steps. Increment by 1.
+                width++;
+                
+                if(width > 100) width = 100;
+                bar.style.width = width + '%';
+
+                if(width < 30) status.innerText = "LOADING ASSETS...";
+                else if(width < 60) status.innerText = "ENTERING ARENA...";
+                else if(width < 90) status.innerText = "SYNCING TABLES...";
+                else status.innerText = "READY!";
+
+                if (width >= 100) {
+                    setTimeout(() => {
+                        loader.style.opacity = '0'; // Fade out loader
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                            game.classList.add('active'); // Reveal game
+                        }, 800);
+                    }, 500);
+                } else {
+                    setTimeout(simulateLoading, 40); // 40ms * 100 = 4000ms (4 secs)
+                }
+            };
+            simulateLoading();
+            
+            // Start the original game logic in background
+            init(); 
+        };
+
+        // --- GAME LOGIC (UNCHANGED) ---
         const botNames = ["Ali_King", "Tiger99", "Lucky7", "Khan007", "Zoya_PK", "Mani_X", "Guest1", "Guest2"];
         // Ensure these match your actual filenames
         const avatarImages = ['assets/avatar_1.png', 'assets/avatar_2.png', 'assets/avatar_3.png'];
@@ -502,12 +591,12 @@
             const card = document.getElementById(cardId);
             const front = card.querySelector('.card-front');
             front.innerText = text;
-            front.style.color = (text.includes('♥') || text.includes('♦')) ? "#cc0000" : "black";
+            front.style.color = (text.includes('♥️') || text.includes('♦️')) ? "#cc0000" : "black";
             card.querySelector('.card-inner').style.transform = "rotateY(180deg)";
         }
 
         function getCardFace(val) {
-            const suits = ['♠', '♥', '♣', '♦'];
+            const suits = ['♠️', '♥️', '♣️', '♦️'];
             const faces = {1:'A', 11:'J', 12:'Q', 13:'K'};
             return (faces[val] || val) + " " + suits[Math.floor(Math.random() * 4)];
         }
@@ -592,8 +681,6 @@
                 chip.style.transform = `rotate(${Math.random()*360}deg) scale(0.9)`;
             }, 10);
         }
-
-        init();
     </script>
 </body>
 </html>
